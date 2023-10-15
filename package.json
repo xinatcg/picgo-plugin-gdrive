@@ -1,7 +1,7 @@
 {
   "name": "picgo-plugin-gdrive",
   "version": "1.0.0",
-  "description": "Upload image to Google Drive and get shared link",
+  "description": "Upload to Google Drive and get shared link",
   "main": "dist/index.js",
   "publishConfig": {
     "access": "public"

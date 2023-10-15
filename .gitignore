@@ -4,3 +4,12 @@ dist/
 yarn-error.log
 temp.js
 package-lock.json
+/.idea/codeStyles/codeStyleConfig.xml
+/.idea/codeStyles/Project.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/.gitignore
+/.idea/GitLink.xml
+/.idea/modules.xml
+/.idea/picgo-plugin-gdrive.iml
+/.idea/vcs.xml
+/temp/
