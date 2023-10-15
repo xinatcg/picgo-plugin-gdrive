@@ -1,23 +1,24 @@
 export declare const ZH_CN: {
   // Alias Keys
-  PIC_GDRIVE_CONFIG_OAUTH_CLIENT_ID: string;
-  PIC_GDRIVE_CONFIG_OAUTH_CLIENT_SECRET: string;
-  PIC_GDRIVE_CONFIG_GOOGLE_DRIVE_DEST_FOLDER_ID: string;
-  PIC_GDRIVE_CONFIG_IMAGE_NAME_PREFIX: string;
-  PIC_GDRIVE_CONFIG_APPEND_GOOGLE_USER_INFO: string;
+  PIC_GDRIVE_CONFIG_OAUTH_CLIENT_ID: string
+  PIC_GDRIVE_CONFIG_OAUTH_CLIENT_SECRET: string
+  PIC_GDRIVE_CONFIG_GOOGLE_DRIVE_DEST_FOLDER_ID: string
+  PIC_GDRIVE_CONFIG_IMAGE_NAME_PREFIX: string
+  PIC_GDRIVE_CONFIG_APPEND_GOOGLE_USER_INFO: string
   // Message Keys
-  PIC_GDRIVE_CONFIG_OAUTH_CLIENT_ID_MESSAGE: string;
-  PIC_GDRIVE_CONFIG_OAUTH_CLIENT_SECRET_MESSAGE: string;
-  PIC_GDRIVE_CONFIG_GOOGLE_DRIVE_DEST_FOLDER_ID_MESSAGE: string;
-  PIC_GDRIVE_CONFIG_IMAGE_NAME_PREFIX_MESSAGE: string;
-  PIC_GDRIVE_CONFIG_APPEND_GOOGLE_USER_INFO_MESSAGE: string;
+  PIC_GDRIVE_CONFIG_OAUTH_CLIENT_ID_MESSAGE: string
+  PIC_GDRIVE_CONFIG_OAUTH_CLIENT_SECRET_MESSAGE: string
+  PIC_GDRIVE_CONFIG_GOOGLE_DRIVE_DEST_FOLDER_ID_MESSAGE: string
+  PIC_GDRIVE_CONFIG_IMAGE_NAME_PREFIX_MESSAGE: string
+  PIC_GDRIVE_CONFIG_APPEND_GOOGLE_USER_INFO_MESSAGE: string
   // GUI Menu Keys
-  PIC_GDRIVE_MENU_AUTH: string;
+  PIC_GDRIVE_MENU_AUTH: string
+  PIC_GDRIVE_MENU_TEST: string
   // Command Keymaps
-  PIC_GDRIVE_COMMAND_UPLOAD: string;
-};
-export declare type IGDriveLocalesKey = keyof typeof ZH_CN;
-export declare type IGDriveLocales = typeof ZH_CN;
+  PIC_GDRIVE_COMMAND_UPLOAD: string
+}
+export declare type IGDriveLocalesKey = keyof typeof ZH_CN
+export declare type IGDriveLocales = typeof ZH_CN
 
 export const localesZhCn = {
   PIC_GDRIVE_CONFIG_OAUTH_CLIENT_ID: 'Oauth Client ID',
@@ -32,8 +33,9 @@ export const localesZhCn = {
   PIC_GDRIVE_CONFIG_APPEND_GOOGLE_USER_INFO_MESSAGE:
     '文件名是否追加 Google 用户信息',
   PIC_GDRIVE_MENU_AUTH: '登陆认证',
-  PIC_GDRIVE_COMMAND_UPLOAD: '上传到 Google Drive',
-};
+  PIC_GDRIVE_MENU_TEST: '测试',
+  PIC_GDRIVE_COMMAND_UPLOAD: '上传到 Google Drive'
+}
 
 export const localeEn = {
   PIC_GDRIVE_CONFIG_OAUTH_CLIENT_ID: 'Oauth Client ID',
@@ -49,5 +51,6 @@ export const localeEn = {
   PIC_GDRIVE_CONFIG_APPEND_GOOGLE_USER_INFO_MESSAGE:
     'File Name Append Google User Info',
   PIC_GDRIVE_MENU_AUTH: 'Login to authenticate',
-  PIC_GDRIVE_COMMAND_UPLOAD: 'Upload to Google Drive',
-};
+  PIC_GDRIVE_MENU_TEST: 'Test',
+  PIC_GDRIVE_COMMAND_UPLOAD: 'Upload to Google Drive'
+}

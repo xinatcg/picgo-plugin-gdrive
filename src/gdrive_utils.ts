@@ -1,6 +1,4 @@
 import * as fs from 'fs/promises'
-import * as path from 'path'
-import * as process from 'process'
 import { google } from 'googleapis'
 import { authenticateEnhance, LocalAuthOptionsEnhance } from './local_auth_enhance'
 import { IGoogleDriveConfig } from './config'
@@ -11,16 +9,20 @@ const SCOPES: string[] = ['https://www.googleapis.com/auth/drive.metadata.readon
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH: string = path.join(process.cwd(), 'token.json')
+const TOKEN_PATH_FILE_NAME: string = 'gdrive_token.json'
+
+function getTokenPath (ctx: IPicGo): string {
+  return ctx.baseDir + '/' + TOKEN_PATH_FILE_NAME
+}
 
 /**
  * Reads previously authorized credentials from the save file.
  *
  * @return {Promise<OAuth2Client|null>}
  */
-async function loadSavedCredentialsIfExist (): Promise<OAuth2Client | null> {
+async function loadSavedCredentialsIfExist (ctx: IPicGo): Promise<OAuth2Client | null> {
   try {
-    const content = await fs.readFile(TOKEN_PATH, 'utf-8')
+    const content = await fs.readFile(getTokenPath(ctx), 'utf-8')
     const credentials = JSON.parse(content)
     return google.auth.fromJSON(credentials) as OAuth2Client
   } catch (err) {
@@ -34,16 +36,21 @@ async function loadSavedCredentialsIfExist (): Promise<OAuth2Client | null> {
  * @param {OAuth2Client} client
  * @param {string} clientId client id
  * @param {string} clientSecret
+ * @param ctx
  * @return {Promise<void>}
  */
-async function saveCredentials (client: OAuth2Client, clientId: string, clientSecret: string): Promise<void> {
+async function saveCredentials (client: OAuth2Client, clientId: string, clientSecret: string, ctx: IPicGo): Promise<void> {
+  ctx.log.info('>> saveCredentials')
   const payload = JSON.stringify({
     type: 'authorized_user',
     client_id: clientId,
     client_secret: clientSecret,
     refresh_token: client.credentials.refresh_token
   })
-  await fs.writeFile(TOKEN_PATH, payload)
+  ctx.log.info('>> saveCredentials > payload > ', payload)
+  const tokenPath = getTokenPath(ctx)
+  ctx.log.info('>> saveCredentials > path > ', tokenPath)
+  await fs.writeFile(tokenPath, payload)
 }
 
 /**
@@ -52,7 +59,7 @@ async function saveCredentials (client: OAuth2Client, clientId: string, clientSe
  */
 export async function authorize (iGoogleDriveConfig: IGoogleDriveConfig, ctx: IPicGo): Promise<OAuth2Client> {
   ctx.log.info('>> authorize')
-  let client = await loadSavedCredentialsIfExist()
+  let client = await loadSavedCredentialsIfExist(ctx)
   if (client) {
     return client
   }
@@ -62,11 +69,12 @@ export async function authorize (iGoogleDriveConfig: IGoogleDriveConfig, ctx: IP
     clientSecret: iGoogleDriveConfig.oauthClientSecret
   }
   ctx.log.info('>> start authenticateEnhance and config')
-  ctx.log.info(iGoogleDriveConfig.oauthClientId)
-  ctx.log.info(iGoogleDriveConfig.oauthClientSecret)
+  // ctx.log.info(iGoogleDriveConfig.oauthClientId)
+  // ctx.log.info(iGoogleDriveConfig.oauthClientSecret)
   client = await authenticateEnhance(option, ctx)
   if (client.credentials) {
-    await saveCredentials(client, iGoogleDriveConfig.oauthClientId, iGoogleDriveConfig.oauthClientSecret)
+    ctx.log.info('>> start save the credentials')
+    await saveCredentials(client, iGoogleDriveConfig.oauthClientId, iGoogleDriveConfig.oauthClientSecret, ctx)
   }
   return client
 }

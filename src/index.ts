@@ -35,7 +35,7 @@ export = (ctx: IPicGo) => {
     })
   }
 
-  async function listFiles (authClient: OAuth2Client) {
+  async function testAfterAuthorizeFinish (authClient: OAuth2Client): Promise<void> {
     ctx.log.info('>> after authorize finish!')
   }
 
@@ -138,6 +138,13 @@ export = (ctx: IPicGo) => {
   const guiMenu = (ctx: PicGo): IGuiMenuItem[] => {
     return [
       {
+        label: ctx.i18n.translate<IGDriveLocalesKey>('PIC_GDRIVE_MENU_TEST'),
+        async handle (ctx: IPicGo, guiApi) {
+          ctx.log.info(ctx.configPath)
+          ctx.log.info(ctx.baseDir)
+        }
+      },
+      {
         label: ctx.i18n.translate<IGDriveLocalesKey>('PIC_GDRIVE_MENU_AUTH'),
         async handle (ctx: IPicGo, guiApi) {
           // TODO: use the Oauth2 configuration to authenticate with external web page
@@ -147,9 +154,9 @@ export = (ctx: IPicGo) => {
           ctx.log.info('>> GDrive >> guiMenu > ' + x)
           const userConfig: IGoogleDriveConfig = ctx.getConfig(configKeyName)
           ctx.log.info('>> GDrive >> guiMenu > config')
-          ctx.log.info(userConfig.oauthClientId)
-          ctx.log.info(userConfig.oauthClientSecret)
-          authorize(userConfig, ctx).then(listFiles).catch(ctx.log.error)
+          // ctx.log.info(userConfig.oauthClientId)
+          // ctx.log.info(userConfig.oauthClientSecret)
+          authorize(userConfig, ctx).then(testAfterAuthorizeFinish).catch(ctx.log.error)
           ctx.log.info('>> GDrive >> guiMenu > end')
         }
       }
