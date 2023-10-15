@@ -15,13 +15,13 @@
  * This is used by several samples to easily provide an oauth2 workflow.
  */
 
-import {OAuth2Client} from 'google-auth-library';
-import * as http from 'http';
-import {URL} from 'url';
-import * as opn from 'open';
-import arrify = require('arrify');
-import destroyer = require('server-destroy');
-import {AddressInfo} from 'net';
+import { OAuth2Client } from 'google-auth-library'
+import * as http from 'http'
+import { URL } from 'url'
+import * as opn from 'open'
+import arrify = require('arrify')
+import destroyer = require('server-destroy')
+import { AddressInfo } from 'net'
 
 const invalidRedirectUri = `The provided keyfile does not define a valid
 redirect URI. There must be at least one redirect URI defined, and this sample
@@ -31,108 +31,130 @@ your keyfile, and add a 'redirect_uris' section.  For example:
 "redirect_uris": [
   "http://localhost:3000/oauth2callback"
 ]
-`;
+`
 
-function isAddressInfo(addr: string | AddressInfo | null): addr is AddressInfo {
-  return (addr as AddressInfo).port !== undefined;
+function isAddressInfo (addr: string | AddressInfo | null): addr is AddressInfo {
+  return (addr as AddressInfo).port !== undefined
 }
 
-export interface LocalAuthOptions {
-  keyfilePath: string;
+// https://github.com/xinatcg/nodejs-local-auth/blob/67b792a1f795480d48f9ce0e5a74d2d7073b5fd4/src/index.ts#L1
+export interface LocalAuthOptionsEnhance {
+  keyfilePath?: string;
   scopes: string[] | string;
+  clientId?: string;
+  clientSecret?: string;
+  redirectUris?: string[];
+  installed?: boolean;
 }
 
 // Open an http server to accept the oauth callback. In this
 // simple example, the only request to our webserver is to
 // /oauth2callback?code=<code>
-export async function authenticate(
-  options: LocalAuthOptions
+export async function authenticateEnhance (
+  options: LocalAuthOptionsEnhance
 ): Promise<OAuth2Client> {
-  if (
-    !options ||
-    !options.keyfilePath ||
-    typeof options.keyfilePath !== 'string'
-  ) {
+  if (!options) {
+    throw new Error('Must provide the options config.')
+  }
+  let client: OAuth2Client
+  let redirectUri: URL
+  let installed = true
+  /* if the keyfilePath parameter exist, then use it */
+  if (options.keyfilePath) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const keyFile = require(options.keyfilePath)
+    const keys = keyFile.installed || keyFile.web
+    if (!keys.redirect_uris || keys.redirect_uris.length === 0) {
+      throw new Error(invalidRedirectUri)
+    }
+    redirectUri = new URL(keys.redirect_uris[0] ?? 'http://localhost')
+    if (redirectUri.hostname !== 'localhost') {
+      throw new Error(invalidRedirectUri)
+    }
+
+    // create an oAuth client to authorize the API call
+    client = new OAuth2Client({
+      clientId: keys.client_id,
+      clientSecret: keys.client_secret,
+    })
+    installed = keyFile.installed
+  } else if (options.clientId && options.clientSecret) {
+    /* Otherwise use the  */
+    client = new OAuth2Client({
+      clientId: options.clientId,
+      clientSecret: options.clientSecret,
+    })
+    if (!options.redirectUris) {
+      redirectUri = new URL('http://localhost')
+    } else {
+      redirectUri = new URL(options.redirectUris[0] ?? 'http://localhost')
+    }
+    installed = options.installed ?? true
+  } else {
     throw new Error(
-      'keyfilePath must be set to the fully qualified path to a GCP credential keyfile.'
-    );
+      'Must have one type of config: keyfilePath must be set to the fully qualified path to a GCP credential keyfile. ' +
+      'Or provide the clientId and clientSecret.'
+    )
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const keyFile = require(options.keyfilePath);
-  const keys = keyFile.installed || keyFile.web;
-  if (!keys.redirect_uris || keys.redirect_uris.length === 0) {
-    throw new Error(invalidRedirectUri);
-  }
-  const redirectUri = new URL(keys.redirect_uris[0] ?? 'http://localhost');
-  if (redirectUri.hostname !== 'localhost') {
-    throw new Error(invalidRedirectUri);
-  }
-
-  // create an oAuth client to authorize the API call
-  const client = new OAuth2Client({
-    clientId: keys.client_id,
-    clientSecret: keys.client_secret,
-  });
 
   return await new Promise((resolve, reject) => {
     const server = http.createServer(async (req, res) => {
       try {
-        const url = new URL(req.url!, 'http://localhost:3000');
+        const url = new URL(req.url!, 'http://localhost:3000')
         if (url.pathname !== redirectUri.pathname) {
-          res.end('Invalid callback URL');
-          return;
+          res.end('Invalid callback URL')
+          return
         }
-        const searchParams = url.searchParams;
+        const searchParams = url.searchParams
         if (searchParams.has('error')) {
-          res.end('Authorization rejected.');
-          reject(new Error(searchParams.get('error')!));
-          return;
+          res.end('Authorization rejected.')
+          reject(new Error(searchParams.get('error')!))
+          return
         }
         if (!searchParams.has('code')) {
-          res.end('No authentication code provided.');
-          reject(new Error('Cannot read authentication code.'));
-          return;
+          res.end('No authentication code provided.')
+          reject(new Error('Cannot read authentication code.'))
+          return
         }
 
-        const code = searchParams.get('code');
-        const {tokens} = await client.getToken({
+        const code = searchParams.get('code')
+        const { tokens } = await client.getToken({
           code: code!,
           redirect_uri: redirectUri.toString(),
-        });
-        client.credentials = tokens;
-        resolve(client);
-        res.end('Authentication successful! Please return to the console.');
+        })
+        client.credentials = tokens
+        resolve(client)
+        res.end('Authentication successful! Please return to the console.')
       } catch (e) {
-        reject(e);
+        reject(e)
       } finally {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (server as any).destroy();
+        (server as any).destroy()
       }
-    });
+    })
 
-    let listenPort = 3000;
-    if (keyFile.installed) {
+    let listenPort = 3000
+    if (installed) {
       // Use emphemeral port if not a web client
-      listenPort = 0;
+      listenPort = 0
     } else if (redirectUri.port !== '') {
-      listenPort = Number(redirectUri.port);
+      listenPort = Number(redirectUri.port)
     }
 
     server.listen(listenPort, () => {
-      const address = server.address();
+      const address = server.address()
       if (isAddressInfo(address)) {
-        redirectUri.port = String(address.port);
+        redirectUri.port = String(address.port)
       }
-      const scopes = arrify(options.scopes || []);
+      const scopes = arrify(options.scopes || [])
       // open the browser to the authorize url to start the workflow
       const authorizeUrl = client.generateAuthUrl({
         redirect_uri: redirectUri.toString(),
         access_type: 'offline',
         scope: scopes.join(' '),
-      });
-      opn(authorizeUrl, {wait: false}).then(cp => cp.unref());
-    });
-    destroyer(server);
-  });
+      })
+      opn(authorizeUrl, { wait: false }).then(cp => cp.unref())
+    })
+    destroyer(server)
+  })
 }
