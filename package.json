@@ -36,5 +36,10 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.3.0",
     "eslint-plugin-promise": "^6.1.0"
+  },
+  "dependencies": {
+    "googleapis": "^105.0.0",
+    "server-destroy": "^1.0.1",
+    "open": "^7.0.3"
   }
 }

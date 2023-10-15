@@ -1,11 +1,11 @@
 import * as fs from 'fs/promises'
 import * as path from 'path'
 import * as process from 'process'
-import { authenticate } from '@google-cloud/local-auth'
 import { google } from 'googleapis'
 import { authenticateEnhance, LocalAuthOptionsEnhance } from './local_auth_enhance'
 import { IGoogleDriveConfig } from './config'
 import { OAuth2Client } from 'google-auth-library'
+import { IPicGo } from 'picgo/dist/types'
 // If modifying these scopes, delete token.json.
 const SCOPES: string[] = ['https://www.googleapis.com/auth/drive.metadata.readonly']
 // The file token.json stores the user's access and refresh tokens, and is
@@ -32,15 +32,15 @@ async function loadSavedCredentialsIfExist (): Promise<OAuth2Client | null> {
  * Serializes credentials to a file compatible with GoogleAuth.fromJSON.
  *
  * @param {OAuth2Client} client
- * @param {string} client_id client id
- * @param {string} client_secret
+ * @param {string} clientId client id
+ * @param {string} clientSecret
  * @return {Promise<void>}
  */
-async function saveCredentials (client: OAuth2Client, client_id: string, client_secret: string): Promise<void> {
+async function saveCredentials (client: OAuth2Client, clientId: string, clientSecret: string): Promise<void> {
   const payload = JSON.stringify({
     type: 'authorized_user',
-    client_id: client_id,
-    client_secret: client_secret,
+    client_id: clientId,
+    client_secret: clientSecret,
     refresh_token: client.credentials.refresh_token
   })
   await fs.writeFile(TOKEN_PATH, payload)
@@ -50,17 +50,21 @@ async function saveCredentials (client: OAuth2Client, client_id: string, client_
  * Load or request authorization to call APIs.
  *
  */
-export async function authorize (iGoogleDriveConfig: IGoogleDriveConfig) {
+export async function authorize (iGoogleDriveConfig: IGoogleDriveConfig, ctx: IPicGo): Promise<OAuth2Client> {
+  ctx.log.info('>> authorize')
   let client = await loadSavedCredentialsIfExist()
   if (client) {
     return client
   }
-  let option: LocalAuthOptionsEnhance = {
+  const option: LocalAuthOptionsEnhance = {
     scopes: SCOPES,
     clientId: iGoogleDriveConfig.oauthClientId,
     clientSecret: iGoogleDriveConfig.oauthClientSecret
   }
-  client = await authenticateEnhance(option)
+  ctx.log.info('>> start authenticateEnhance and config')
+  ctx.log.info(iGoogleDriveConfig.oauthClientId)
+  ctx.log.info(iGoogleDriveConfig.oauthClientSecret)
+  client = await authenticateEnhance(option, ctx)
   if (client.credentials) {
     await saveCredentials(client, iGoogleDriveConfig.oauthClientId, iGoogleDriveConfig.oauthClientSecret)
   }

@@ -18,10 +18,11 @@
 import { OAuth2Client } from 'google-auth-library'
 import * as http from 'http'
 import { URL } from 'url'
-import * as opn from 'open'
 import arrify = require('arrify')
 import destroyer = require('server-destroy')
 import { AddressInfo } from 'net'
+import open from 'open'
+import { IPicGo } from 'picgo/dist/types'
 
 const invalidRedirectUri = `The provided keyfile does not define a valid
 redirect URI. There must be at least one redirect URI defined, and this sample
@@ -39,20 +40,21 @@ function isAddressInfo (addr: string | AddressInfo | null): addr is AddressInfo 
 
 // https://github.com/xinatcg/nodejs-local-auth/blob/67b792a1f795480d48f9ce0e5a74d2d7073b5fd4/src/index.ts#L1
 export interface LocalAuthOptionsEnhance {
-  keyfilePath?: string;
-  scopes: string[] | string;
-  clientId?: string;
-  clientSecret?: string;
-  redirectUris?: string[];
-  installed?: boolean;
+  keyfilePath?: string
+  scopes: string[] | string
+  clientId?: string
+  clientSecret?: string
+  redirectUris?: string[]
+  installed?: boolean
 }
 
 // Open an http server to accept the oauth callback. In this
 // simple example, the only request to our webserver is to
 // /oauth2callback?code=<code>
 export async function authenticateEnhance (
-  options: LocalAuthOptionsEnhance
+  options: LocalAuthOptionsEnhance, ctx: IPicGo
 ): Promise<OAuth2Client> {
+  ctx.log.info('>> authenticateEnhance')
   if (!options) {
     throw new Error('Must provide the options config.')
   }
@@ -75,14 +77,15 @@ export async function authenticateEnhance (
     // create an oAuth client to authorize the API call
     client = new OAuth2Client({
       clientId: keys.client_id,
-      clientSecret: keys.client_secret,
+      clientSecret: keys.client_secret
     })
     installed = keyFile.installed
   } else if (options.clientId && options.clientSecret) {
+    ctx.log.info('>> authenticateEnhance handle config by clientId and clientSecret')
     /* Otherwise use the  */
     client = new OAuth2Client({
       clientId: options.clientId,
-      clientSecret: options.clientSecret,
+      clientSecret: options.clientSecret
     })
     if (!options.redirectUris) {
       redirectUri = new URL('http://localhost')
@@ -91,16 +94,21 @@ export async function authenticateEnhance (
     }
     installed = options.installed ?? true
   } else {
+    ctx.log.info('>> authenticateEnhance handle config exception')
     throw new Error(
       'Must have one type of config: keyfilePath must be set to the fully qualified path to a GCP credential keyfile. ' +
       'Or provide the clientId and clientSecret.'
     )
   }
-
+  ctx.log.info('>> client')
+  ctx.log.info(client._clientId ?? '')
+  ctx.log.info(client._clientSecret ?? '')
   return await new Promise((resolve, reject) => {
     const server = http.createServer(async (req, res) => {
       try {
         const url = new URL(req.url!, 'http://localhost:3000')
+
+        ctx.log.info('>> url ' + url.toString())
         if (url.pathname !== redirectUri.pathname) {
           res.end('Invalid callback URL')
           return
@@ -120,7 +128,7 @@ export async function authenticateEnhance (
         const code = searchParams.get('code')
         const { tokens } = await client.getToken({
           code: code!,
-          redirect_uri: redirectUri.toString(),
+          redirect_uri: redirectUri.toString()
         })
         client.credentials = tokens
         resolve(client)
@@ -151,9 +159,9 @@ export async function authenticateEnhance (
       const authorizeUrl = client.generateAuthUrl({
         redirect_uri: redirectUri.toString(),
         access_type: 'offline',
-        scope: scopes.join(' '),
+        scope: scopes.join(' ')
       })
-      opn(authorizeUrl, { wait: false }).then(cp => cp.unref())
+      open(authorizeUrl, { wait: false }).then(cp => cp.unref())
     })
     destroyer(server)
   })
