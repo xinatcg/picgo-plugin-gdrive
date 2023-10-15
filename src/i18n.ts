@@ -14,6 +14,8 @@ export declare const ZH_CN: {
   // GUI Menu Keys
   PIC_GDRIVE_MENU_AUTH: string
   PIC_GDRIVE_MENU_TEST: string
+  PIC_GDRIVE_MENU_CHECK_TOKEN_PATH: string
+  PIC_GDRIVE_MENU_CHECK_TOKEN_PATH_MESSAGE: string
   // Command Keymaps
   PIC_GDRIVE_COMMAND_UPLOAD: string
 }
@@ -34,6 +36,8 @@ export const localesZhCn = {
     '文件名是否追加 Google 用户信息',
   PIC_GDRIVE_MENU_AUTH: '登陆认证',
   PIC_GDRIVE_MENU_TEST: '测试',
+  PIC_GDRIVE_MENU_CHECK_TOKEN_PATH: '查看保存 Token 路径',
+  PIC_GDRIVE_MENU_CHECK_TOKEN_PATH_MESSAGE: '是否存在:',
   PIC_GDRIVE_COMMAND_UPLOAD: '上传到 Google Drive'
 }
 
@@ -52,5 +56,7 @@ export const localeEn = {
     'File Name Append Google User Info',
   PIC_GDRIVE_MENU_AUTH: 'Login to authenticate',
   PIC_GDRIVE_MENU_TEST: 'Test',
+  PIC_GDRIVE_MENU_CHECK_TOKEN_PATH: 'Check Token Path',
+  PIC_GDRIVE_MENU_CHECK_TOKEN_PATH_MESSAGE: 'exist or not: ',
   PIC_GDRIVE_COMMAND_UPLOAD: 'Upload to Google Drive'
 }

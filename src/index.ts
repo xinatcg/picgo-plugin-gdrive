@@ -2,8 +2,9 @@ import { IGuiMenuItem, IPluginConfig, PicGo } from 'picgo'
 import { IGoogleDriveConfig } from './config'
 import { IGDriveLocalesKey, localeEn, localesZhCn } from './i18n'
 import { IPicGo, IPlugin } from 'picgo/dist/types'
-import { authorize } from './gdrive_utils'
+import { authorize, getTokenPath } from './gdrive_utils'
 import { OAuth2Client } from 'google-auth-library'
+import fs from 'fs/promises'
 
 function uploadProcess (ctx: IPicGo): void {
   ctx.log.info('>> GDrive >> uploadProcess')
@@ -138,10 +139,21 @@ export = (ctx: IPicGo) => {
   const guiMenu = (ctx: PicGo): IGuiMenuItem[] => {
     return [
       {
-        label: ctx.i18n.translate<IGDriveLocalesKey>('PIC_GDRIVE_MENU_TEST'),
+        label: ctx.i18n.translate<IGDriveLocalesKey>('PIC_GDRIVE_MENU_CHECK_TOKEN_PATH'),
         async handle (ctx: IPicGo, guiApi) {
-          ctx.log.info(ctx.configPath)
-          ctx.log.info(ctx.baseDir)
+          const tokenPath = getTokenPath(ctx)
+          ctx.log.info(tokenPath)
+          const title = ctx.i18n.translate<IGDriveLocalesKey>('PIC_GDRIVE_MENU_CHECK_TOKEN_PATH')
+          const messageSuffix = ctx.i18n.translate<IGDriveLocalesKey>('PIC_GDRIVE_MENU_CHECK_TOKEN_PATH_MESSAGE')
+          const content = await fs.readFile(getTokenPath(ctx), 'utf-8')
+          const exist = content !== undefined && content.length > 0
+          const result = await guiApi.showMessageBox({
+            title,
+            message: tokenPath + messageSuffix + exist.toString(),
+            type: 'info',
+            buttons: ['Yes', 'No']
+          })
+          ctx.log.info(result)
         }
       },
       {
@@ -158,6 +170,13 @@ export = (ctx: IPicGo) => {
           // ctx.log.info(userConfig.oauthClientSecret)
           authorize(userConfig, ctx).then(testAfterAuthorizeFinish).catch(ctx.log.error)
           ctx.log.info('>> GDrive >> guiMenu > end')
+        }
+      },
+      {
+        label: ctx.i18n.translate<IGDriveLocalesKey>('PIC_GDRIVE_MENU_TEST'),
+        async handle (ctx: IPicGo, guiApi) {
+          ctx.log.info(ctx.configPath)
+          ctx.log.info(ctx.baseDir)
         }
       }
     ]

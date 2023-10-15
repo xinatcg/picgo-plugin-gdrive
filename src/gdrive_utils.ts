@@ -11,7 +11,7 @@ const SCOPES: string[] = ['https://www.googleapis.com/auth/drive.metadata.readon
 // time.
 const TOKEN_PATH_FILE_NAME: string = 'gdrive_token.json'
 
-function getTokenPath (ctx: IPicGo): string {
+export function getTokenPath (ctx: IPicGo): string {
   return ctx.baseDir + '/' + TOKEN_PATH_FILE_NAME
 }
 
