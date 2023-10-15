@@ -6,7 +6,7 @@
 
 官方文档的流程是通过加载 Token.json 文件来配置 Oauth. 我们需要将这个过程转化为使用配置来实现.
 
-### 官方案例解析
+### 官方授权案例解析
 
 ```javascript
 // The file token.json stores the user's access and refresh tokens, and is
@@ -96,12 +96,36 @@ export async function authenticate(
 
 #### google-auth-library
 
-
 ```bash
 npm install google-auth-library --save
 ```
 
+### Google Drive API
 
+https://developers.google.com/drive/api/guides/manage-uploads#node.js
+
+#### Buffer to bufferStream
+
+参考该[文章](https://www.labnol.org/google-drive-api-upload-220412)将 Buffer 转化为 Google Drive API 可以使用的数据
+
+```javascript
+const uploadFile = async (fileObject) => {
+  const bufferStream = new stream.PassThrough();
+  bufferStream.end(fileObject.buffer);
+  const { data } = await google.drive({ version: 'v3' }).files.create({
+    media: {
+      mimeType: fileObject.mimeType,
+      body: bufferStream,
+    },
+    requestBody: {
+      name: fileObject.originalname,
+      parents: ['DRIVE_FOLDER_ID'],
+    },
+    fields: 'id,name',
+  });
+  console.log(`Uploaded file ${data.name} ${data.id}`);
+};
+```
 
 ## PicGo Plugin 笔记
 

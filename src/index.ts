@@ -5,9 +5,49 @@ import { IPicGo, IPlugin } from 'picgo/dist/types'
 import { authorize, getTokenPath } from './gdrive_utils'
 import { OAuth2Client } from 'google-auth-library'
 import fs from 'fs/promises'
+import { google } from 'googleapis'
+import * as stream from 'stream'
 
-function uploadProcess (ctx: IPicGo): void {
+async function uploadProcess (ctx: IPicGo): Promise<void> {
   ctx.log.info('>> GDrive >> uploadProcess')
+  ctx.log.info(ctx.output.toString())
+
+  const userConfig: IGoogleDriveConfig = ctx.getConfig(configKeyName)
+  const oauthClient = await authorize(userConfig, ctx)
+  const drive = google.drive({ version: 'v3', auth: oauthClient })
+
+  for (const imgInfo of ctx.output) {
+    ctx.log.info('>> GDrive >> uploadProcess >> imgInfo')
+    ctx.log.info(imgInfo.imgUrl ?? '')
+    ctx.log.info(imgInfo.fileName ?? '')
+    /* Start to upload the image
+    *  https://developers.google.com/drive/api/guides/manage-uploads#node.js
+    * */
+
+    const requestBody = {
+      name: 'photo.png',
+      // parents: [userConfig.googleDriveDestFolderId],
+      // parents: ['15S5phicfgTnGA1tDnss7TYeI3sU042iQ'],
+      fields: 'id,name'
+    }
+    const bufferStream = new stream.PassThrough()
+    bufferStream.end(imgInfo.buffer)
+    const media = {
+      mimeType: 'image/png',
+      body: bufferStream
+    }
+    try {
+      const file = await drive.files.create({
+        requestBody,
+        media
+      })
+      console.log('File Id:', file.data.id)
+      ctx.log.info(file.data.id ?? '')
+      ctx.log.info(JSON.stringify(file.data) ?? '')
+    } catch (err) {
+      ctx.log.error(err)
+    }
+  }
 }
 
 /*  the key name MUST same with the uploader name */
@@ -139,6 +179,33 @@ export = (ctx: IPicGo) => {
   const guiMenu = (ctx: PicGo): IGuiMenuItem[] => {
     return [
       {
+        label: ctx.i18n.translate<IGDriveLocalesKey>('PIC_GDRIVE_MENU_AUTH'),
+        async handle (ctx: IPicGo, guiApi) {
+          // TODO: use the Oauth2 configuration to authenticate with external web page
+          // https://developers.google.com/drive/api/quickstart/nodejs#set_up_the_sample
+          ctx.log.info('>> GDrive >> guiMenu > PIC_GDRIVE_MENU_AUTH > handle')
+          const x = process.cwd()
+          ctx.log.info('>> GDrive >> guiMenu > ' + x)
+          const userConfig: IGoogleDriveConfig = ctx.getConfig(configKeyName)
+          ctx.log.info('>> GDrive >> guiMenu > config')
+          // ctx.log.info(userConfig.oauthClientId)
+          // ctx.log.info(userConfig.oauthClientSecret)
+          authorize(userConfig, ctx).then(testAfterAuthorizeFinish).catch(ctx.log.error)
+          ctx.log.info('>> GDrive >> guiMenu > end')
+        }
+      },
+      {
+        label: ctx.i18n.translate<IGDriveLocalesKey>('PIC_GDRIVE_MENU_TEST_UPLOAD'),
+        async handle (ctx: IPicGo, guiApi) {
+          ctx.log.info('>> GDrive >> guiMenu > test upload')
+          ctx.output.forEach(imgInfo => {
+            ctx.log.info('>> GDrive >> guiMenu > test upload > imgInfo')
+            ctx.log.info(imgInfo.imgUrl ?? '')
+            ctx.log.info(imgInfo.imgUrl ?? '')
+          })
+        }
+      },
+      {
         label: ctx.i18n.translate<IGDriveLocalesKey>('PIC_GDRIVE_MENU_CHECK_TOKEN_PATH'),
         async handle (ctx: IPicGo, guiApi) {
           const tokenPath = getTokenPath(ctx)
@@ -157,22 +224,6 @@ export = (ctx: IPicGo) => {
         }
       },
       {
-        label: ctx.i18n.translate<IGDriveLocalesKey>('PIC_GDRIVE_MENU_AUTH'),
-        async handle (ctx: IPicGo, guiApi) {
-          // TODO: use the Oauth2 configuration to authenticate with external web page
-          // https://developers.google.com/drive/api/quickstart/nodejs#set_up_the_sample
-          ctx.log.info('>> GDrive >> guiMenu > PIC_GDRIVE_MENU_AUTH > handle')
-          const x = process.cwd()
-          ctx.log.info('>> GDrive >> guiMenu > ' + x)
-          const userConfig: IGoogleDriveConfig = ctx.getConfig(configKeyName)
-          ctx.log.info('>> GDrive >> guiMenu > config')
-          // ctx.log.info(userConfig.oauthClientId)
-          // ctx.log.info(userConfig.oauthClientSecret)
-          authorize(userConfig, ctx).then(testAfterAuthorizeFinish).catch(ctx.log.error)
-          ctx.log.info('>> GDrive >> guiMenu > end')
-        }
-      },
-      {
         label: ctx.i18n.translate<IGDriveLocalesKey>('PIC_GDRIVE_MENU_TEST'),
         async handle (ctx: IPicGo, guiApi) {
           ctx.log.info(ctx.configPath)
@@ -184,7 +235,7 @@ export = (ctx: IPicGo) => {
 
   const handle = async (ctx: IPicGo): Promise<IPicGo> => {
     ctx.log.info('>> GDrive >> handle trigger')
-    uploadProcess(ctx)
+    await uploadProcess(ctx)
     return ctx
   }
 
@@ -199,7 +250,7 @@ export = (ctx: IPicGo) => {
       name: 'uploadToGDrive',
       async handle (ctx: IPicGo, guiApi: any) {
         ctx.log.info('>> GDrive >> command trigger')
-        uploadProcess(ctx)
+        await uploadProcess(ctx)
       }
     }
   ]

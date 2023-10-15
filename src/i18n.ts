@@ -16,6 +16,7 @@ export declare const ZH_CN: {
   PIC_GDRIVE_MENU_TEST: string
   PIC_GDRIVE_MENU_CHECK_TOKEN_PATH: string
   PIC_GDRIVE_MENU_CHECK_TOKEN_PATH_MESSAGE: string
+  PIC_GDRIVE_MENU_TEST_UPLOAD: string
   // Command Keymaps
   PIC_GDRIVE_COMMAND_UPLOAD: string
 }
@@ -37,7 +38,8 @@ export const localesZhCn = {
   PIC_GDRIVE_MENU_AUTH: '登陆认证',
   PIC_GDRIVE_MENU_TEST: '测试',
   PIC_GDRIVE_MENU_CHECK_TOKEN_PATH: '查看保存 Token 路径',
-  PIC_GDRIVE_MENU_CHECK_TOKEN_PATH_MESSAGE: '是否存在:',
+  PIC_GDRIVE_MENU_CHECK_TOKEN_PATH_MESSAGE: ' 是否存在:',
+  PIC_GDRIVE_MENU_TEST_UPLOAD: '测试上传',
   PIC_GDRIVE_COMMAND_UPLOAD: '上传到 Google Drive'
 }
 
@@ -57,6 +59,7 @@ export const localeEn = {
   PIC_GDRIVE_MENU_AUTH: 'Login to authenticate',
   PIC_GDRIVE_MENU_TEST: 'Test',
   PIC_GDRIVE_MENU_CHECK_TOKEN_PATH: 'Check Token Path',
-  PIC_GDRIVE_MENU_CHECK_TOKEN_PATH_MESSAGE: 'exist or not: ',
+  PIC_GDRIVE_MENU_CHECK_TOKEN_PATH_MESSAGE: ' exist or not: ',
+  PIC_GDRIVE_MENU_TEST_UPLOAD: 'Test Upload',
   PIC_GDRIVE_COMMAND_UPLOAD: 'Upload to Google Drive'
 }

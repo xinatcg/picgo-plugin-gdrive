@@ -5,7 +5,10 @@ import { IGoogleDriveConfig } from './config'
 import { OAuth2Client } from 'google-auth-library'
 import { IPicGo } from 'picgo/dist/types'
 // If modifying these scopes, delete token.json.
-const SCOPES: string[] = ['https://www.googleapis.com/auth/drive.metadata.readonly']
+const SCOPES: string[] = [
+  'https://www.googleapis.com/auth/drive.metadata.readonly',
+  'https://www.googleapis.com/auth/drive.file'
+]
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
