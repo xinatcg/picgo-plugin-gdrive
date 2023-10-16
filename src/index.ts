@@ -8,7 +8,6 @@ import fs from 'fs/promises'
 import { google } from 'googleapis'
 import * as stream from 'stream'
 import { getCurrentFormattedTime } from './utils'
-
 async function uploadProcess (ctx: IPicGo): Promise<void> {
   ctx.log.info('>> GDrive >> uploadProcess')
   ctx.log.info(ctx.output.toString())
@@ -54,7 +53,9 @@ async function uploadProcess (ctx: IPicGo): Promise<void> {
         fields: 'id,name,webViewLink'
       })
       ctx.log.info(JSON.stringify(file.data) ?? '')
-      imgInfo.imgUrl = file.data.webViewLink ?? ''
+      const sharedLink = file.data.webViewLink ?? ''
+      // copy(sharedLink)
+      imgInfo.imgUrl = sharedLink
     } catch (err) {
       ctx.log.error(err)
     }
