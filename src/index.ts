@@ -7,6 +7,7 @@ import { OAuth2Client } from 'google-auth-library'
 import fs from 'fs/promises'
 import { google } from 'googleapis'
 import * as stream from 'stream'
+import { getCurrentFormattedTime } from './utils'
 
 async function uploadProcess (ctx: IPicGo): Promise<void> {
   ctx.log.info('>> GDrive >> uploadProcess')
@@ -14,21 +15,27 @@ async function uploadProcess (ctx: IPicGo): Promise<void> {
 
   const userConfig: IGoogleDriveConfig = ctx.getConfig(configKeyName)
   const oauthClient = await authorize(userConfig, ctx)
-  const drive = google.drive({ version: 'v3', auth: oauthClient })
+  const drive = google.drive({
+    version: 'v3',
+    auth: oauthClient
+  })
 
   for (const imgInfo of ctx.output) {
     ctx.log.info('>> GDrive >> uploadProcess >> imgInfo')
-    ctx.log.info(imgInfo.imgUrl ?? '')
     ctx.log.info(imgInfo.fileName ?? '')
     /* Start to upload the image
     *  https://developers.google.com/drive/api/guides/manage-uploads#node.js
+    *  https://developers.google.com/drive/api/guides/folder
     * */
-
+    const defaultFileName = getCurrentFormattedTime() + '.png'
+    let fileName = imgInfo.fileName ?? defaultFileName
+    if (userConfig.imageNamePrefix) {
+      fileName = userConfig.imageNamePrefix + '_' + fileName
+    }
+    ctx.log.info('final fileName to upload: ' + fileName)
     const requestBody = {
-      name: 'photo.png',
-      // parents: [userConfig.googleDriveDestFolderId],
-      // parents: ['15S5phicfgTnGA1tDnss7TYeI3sU042iQ'],
-      fields: 'id,name'
+      name: fileName,
+      parents: [userConfig.googleDriveDestFolderId]
     }
     const bufferStream = new stream.PassThrough()
     bufferStream.end(imgInfo.buffer)
@@ -39,11 +46,15 @@ async function uploadProcess (ctx: IPicGo): Promise<void> {
     try {
       const file = await drive.files.create({
         requestBody,
-        media
+        media,
+        // necessary to access shared folder: https://developers.google.com/drive/api/reference/rest/v3/files/list
+        supportsAllDrives: true,
+        // we can check the return data structure of `create` function to find the corresponding return filed. (drive_v3.Schema$File)
+        // webViewLink -> shared link to the image file
+        fields: 'id,name,webViewLink'
       })
-      console.log('File Id:', file.data.id)
-      ctx.log.info(file.data.id ?? '')
       ctx.log.info(JSON.stringify(file.data) ?? '')
+      imgInfo.imgUrl = file.data.webViewLink ?? ''
     } catch (err) {
       ctx.log.error(err)
     }
