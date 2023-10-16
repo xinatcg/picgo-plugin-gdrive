@@ -12,7 +12,7 @@ import ncp from 'node-clipboardy'
 
 async function uploadProcess (ctx: IPicGo): Promise<void> {
   ctx.log.info('>> GDrive >> uploadProcess')
-  ctx.log.info(ctx.output.toString())
+  // ctx.log.info(ctx.output.toString())
 
   const userConfig: IGoogleDriveConfig = ctx.getConfig(configKeyName)
   // ctx.log.info('>> userConfig')
@@ -290,8 +290,8 @@ export = (ctx: IPicGo) => {
         ctx.log.info('>> GDrive >> command trigger')
 
         const config: any = ctx.getConfig()
-        ctx.log.info('>> userConfigBefore')
-        ctx.log.info(JSON.stringify(config))
+        // ctx.log.info('>> userConfigBefore')
+        // ctx.log.info(JSON.stringify(config))
 
         /* save app origin config */
         const originCurrent = config.picBed.current
