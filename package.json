@@ -38,9 +38,8 @@
     "eslint-plugin-promise": "^6.1.0"
   },
   "dependencies": {
-    "clipboardy": "^3.0.0",
-    "copy-to-clipboard": "^3.3.3",
     "googleapis": "^105.0.0",
+    "node-clipboardy": "^1.0.3",
     "open": "^7.0.3",
     "server-destroy": "^1.0.1"
   }

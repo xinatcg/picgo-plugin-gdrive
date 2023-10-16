@@ -8,11 +8,15 @@ import fs from 'fs/promises'
 import { google } from 'googleapis'
 import * as stream from 'stream'
 import { getCurrentFormattedTime } from './utils'
+import ncp from 'node-clipboardy'
+
 async function uploadProcess (ctx: IPicGo): Promise<void> {
   ctx.log.info('>> GDrive >> uploadProcess')
   ctx.log.info(ctx.output.toString())
 
   const userConfig: IGoogleDriveConfig = ctx.getConfig(configKeyName)
+  // ctx.log.info('>> userConfig')
+  // ctx.log.info(JSON.stringify(userConfig))
   const oauthClient = await authorize(userConfig, ctx)
   const drive = google.drive({
     version: 'v3',
@@ -54,8 +58,8 @@ async function uploadProcess (ctx: IPicGo): Promise<void> {
       })
       ctx.log.info(JSON.stringify(file.data) ?? '')
       const sharedLink = file.data.webViewLink ?? ''
-      // copy(sharedLink)
-      imgInfo.imgUrl = sharedLink
+      ncp.writeSync(sharedLink)
+      // imgInfo.imgUrl = sharedLink
     } catch (err) {
       ctx.log.error(err)
     }
@@ -69,7 +73,8 @@ async function uploadProcess (ctx: IPicGo): Promise<void> {
 * 你的plugin本身如果有配置项，那么你的plugin配置项会直接存放在picgo配置项下，并且以你的plugin命名。
 * Transformer的配置项会放在picgo配置项的transformer下。 关于配置相关的部分你应该查看配置文件一章。
 *  */
-const configKeyName = 'picBed.Google Drive'
+const uploaderId = 'Google Drive'
+const configKeyName = 'picBed.' + uploaderId
 
 export = (ctx: IPicGo) => {
   const register = (): void => {
@@ -80,8 +85,8 @@ export = (ctx: IPicGo) => {
       handle,
       config
     }
-    ctx.helper.uploader.register('Google Drive', plugin)
-    ctx.helper.afterUploadPlugins.register('Google Drive', {
+    ctx.helper.uploader.register(uploaderId, plugin)
+    ctx.helper.afterUploadPlugins.register(uploaderId, {
       handle (ctx) {
         ctx.log.info('afterUploadPlugins')
       }
@@ -262,12 +267,38 @@ export = (ctx: IPicGo) => {
       name: 'uploadToGDrive',
       async handle (ctx: IPicGo, guiApi: any) {
         ctx.log.info('>> GDrive >> command trigger')
-        await uploadProcess(ctx)
+
+        const config: any = ctx.getConfig()
+        ctx.log.info('>> userConfigBefore')
+        ctx.log.info(JSON.stringify(config))
+
+        /* save app origin config */
+        const originCurrent = config.picBed.current
+        const originUploader = config.picBed.uploader
+        /* switch to this plugin temp */
+        config.picBed.current = uploaderId
+        config.picBed.uploader = uploaderId
+        // ctx.log.info('>> userConfigBefore')
+        // ctx.log.info(JSON.stringify(config))
+        // ctx.log.info('>> updateUserConfigBefore')
+        // ctx.log.info(JSON.stringify(config))
+
+        ctx.setConfig(config)
+        try {
+          await guiApi.upload()
+        } finally {
+          /* switch back to origin config */
+          config.picBed.current = originCurrent
+          config.picBed.uploader = originUploader
+          // ctx.log.info('>> finally')
+          // ctx.log.info(JSON.stringify(config))
+          ctx.setConfig(config)
+        }
       }
     }
   ]
   return {
-    uploader: 'Google Drive',
+    uploader: uploaderId,
     commands,
     register,
     guiMenu
