@@ -58,7 +58,11 @@ async function uploadProcess (ctx: IPicGo): Promise<void> {
       })
       ctx.log.info(JSON.stringify(file.data) ?? '')
       const sharedLink = file.data.webViewLink ?? ''
-      ncp.writeSync(sharedLink)
+      if (userConfig.copyLinkToClipboardDirect) {
+        ncp.write(sharedLink)
+      } else {
+        imgInfo.imgUrl = sharedLink
+      }
       // imgInfo.imgUrl = sharedLink
     } catch (err) {
       ctx.log.error(err)
@@ -104,7 +108,8 @@ export = (ctx: IPicGo) => {
       oauthClientSecret: '',
       googleDriveDestFolderId: '',
       imageNamePrefix: '',
-      appendGoogleUserInfo: true
+      appendGoogleUserInfo: false,
+      copyLinkToClipboardDirect: false
     }
     let userConfig = ctx.getConfig<IGoogleDriveConfig>(configKeyName)
     userConfig = { ...defaultConfig, ...(userConfig || {}) }
@@ -187,6 +192,22 @@ export = (ctx: IPicGo) => {
           )
         },
         default: userConfig.appendGoogleUserInfo,
+        required: true
+      },
+      {
+        name: 'copyLinkToClipboardDirect',
+        type: 'confirm',
+        get alias () {
+          return ctx.i18n.translate<IGDriveLocalesKey>(
+            'PIC_GDRIVE_CONFIG_COPY_LINK_DIRECT'
+          )
+        },
+        get message () {
+          return ctx.i18n.translate<IGDriveLocalesKey>(
+            'PIC_GDRIVE_CONFIG_COPY_LINK_DIRECT_MESSAGE'
+          )
+        },
+        default: userConfig.copyLinkToClipboardDirect,
         required: true
       }
     ]
