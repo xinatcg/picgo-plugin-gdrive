@@ -1,3 +1,11 @@
+## [1.0.1](https://github.com/xinatcg/picgo-plugin-gdrive/compare/1.0.0...1.0.1) (2023-10-17)
+
+
+### Performance Improvements
+
+* add document for how to use the plugin ([e930e34](https://github.com/xinatcg/picgo-plugin-gdrive/commit/e930e345ec812a834cddb49d93f3f6306346b658))
+* add google drive logo ([9c778b3](https://github.com/xinatcg/picgo-plugin-gdrive/commit/9c778b3fc430b14b9bd21576db089d6640ccfa51))
+
 # 1.0.0 (2023-10-17)
 
 
