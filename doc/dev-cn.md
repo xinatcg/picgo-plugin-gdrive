@@ -133,3 +133,7 @@ const uploadFile = async (fileObject) => {
 
 https://github.com/yabostone/picgo-plugin-rclone
 https://github.com/wayjam/picgo-plugin-s3
+
+## GitHub Action
+
+![](https://cdn.jsdelivr.net/gh/storageimgbed/storage@img/images/202310170802353.png)
