@@ -84,5 +84,3 @@ Why develop this plugin? It's mainly based on a need - internal image sharing an
 2. Support Service Account authorization method.
 3. Automation control over image names enhance.
 
-
-
