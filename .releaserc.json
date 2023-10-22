@@ -9,7 +9,19 @@
       {"type": "func", "release": "patch"}
     ]
   }],
-  "@semantic-release/release-notes-generator",
+  ["@semantic-release/release-notes-generator",
+    {
+      "preset": "conventionalcommits",
+      "presetConfig": {
+        "types": [
+          {
+            "type": "func",
+            "section": ":zap: Function",
+            "hidden": false
+          }
+        ]
+      }
+    }],
   ["@semantic-release/changelog", { "preset": "angular" }],
   ["@semantic-release/git", {
     "assets": ["package.json", "CHANGELOG.md"],
