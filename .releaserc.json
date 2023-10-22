@@ -5,7 +5,8 @@
     "preset": "angular",
     "releaseRules": [
       {"type": "refactor", "release": "patch"},
-      {"type": "function", "release": "patch"}
+      {"type": "function", "release": "patch"},
+      {"type": "func", "release": "patch"}
     ]
   }],
   "@semantic-release/release-notes-generator",
