@@ -4,9 +4,38 @@
   ["@semantic-release/commit-analyzer", {
     "preset": "angular",
     "releaseRules": [
-      {"type": "refactor", "release": "patch"},
-      {"type": "function", "release": "patch"},
-      {"type": "func", "release": "patch"}
+      {
+        "type": "refactor",
+        "release": "patch"
+      },
+      {
+        "type": "docs",
+        "release": "patch"
+      },
+      {
+        "type": "test",
+        "release": "patch"
+      },
+      {
+        "type": "style",
+        "release": "patch"
+      },
+      {
+        "type": "perf",
+        "release": "patch"
+      },
+      {
+        "type": "func",
+        "release": "patch"
+      },
+      {
+        "type": "ci",
+        "release": "patch"
+      },
+      {
+        "type": "build",
+        "release": "patch"
+      }
     ]
   }],
   ["@semantic-release/release-notes-generator",
@@ -15,9 +44,53 @@
       "presetConfig": {
         "types": [
           {
-            "type": "func",
-            "section": ":zap: Function",
+            "type": "feat",
+            "section": ":sparkles: Features",
             "hidden": false
+          },
+          {
+            "type": "fix",
+            "section": ":bug: Bug Fixes",
+            "hidden": false
+          },
+          {
+            "type": "docs",
+            "section": ":memo: Docs",
+            "hidden": false
+          },
+          {
+            "type": "style",
+            "section": ":barber: Styles",
+            "hidden": false
+          },
+          {
+            "type": "refactor",
+            "section": ":zap: Refactors",
+            "hidden": false
+          },
+          {
+            "type": "perf",
+            "section": ":fast_forward: Performance Improvements",
+            "hidden": false
+          },
+          {
+            "type": "func",
+            "section": ":star: Performance Improvements",
+            "hidden": false
+          },
+          {
+            "type": "test",
+            "section": ":white_check_mark: Tests",
+            "hidden": false
+          },
+          {
+            "type": "ci",
+            "section": ":repeat: CI",
+            "hidden": false
+          },
+          {
+            "type": "chore",
+            "hidden": true
           }
         ]
       }
