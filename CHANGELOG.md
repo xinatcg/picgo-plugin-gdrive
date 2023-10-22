@@ -1,3 +1,15 @@
+## [1.1.0](https://github.com/xinatcg/picgo-plugin-gdrive/compare/1.0.5...1.1.0) (2023-10-22)
+
+
+### :sparkles: Features
+
+* **ci:** fix func release note information and test feat release note ([19cff26](https://github.com/xinatcg/picgo-plugin-gdrive/commit/19cff2660e2efacb8366f2a7af1b711677c64968))
+
+
+### :bug: Bug Fixes
+
+* **test:** test release note fix ([0ffaba6](https://github.com/xinatcg/picgo-plugin-gdrive/commit/0ffaba64a82e9b6f4dee019c0f76f095af46e847))
+
 ## [1.0.5](https://github.com/xinatcg/picgo-plugin-gdrive/compare/1.0.4...1.0.5) (2023-10-22)
 
 
