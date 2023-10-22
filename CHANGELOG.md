@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/xinatcg/picgo-plugin-gdrive/compare/1.0.2...1.0.3) (2023-10-22)
+
+
+### :zap: Function
+
+* **ci:** add custom rule for release note generator ([3a999a6](https://github.com/xinatcg/picgo-plugin-gdrive/commit/3a999a693d2fa9fd7b86b06723eb1a47a31b046a))
+
 ## [1.0.2](https://github.com/xinatcg/picgo-plugin-gdrive/compare/1.0.1...1.0.2) (2023-10-22)
 
 ## [1.0.1](https://github.com/xinatcg/picgo-plugin-gdrive/compare/1.0.0...1.0.1) (2023-10-17)
