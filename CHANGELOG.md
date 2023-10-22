@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/xinatcg/picgo-plugin-gdrive/compare/1.0.3...1.0.4) (2023-10-22)
+
+
+### :zap: Function
+
+* **ci:** remove the package not in use for github action ([f018041](https://github.com/xinatcg/picgo-plugin-gdrive/commit/f01804125818e2ddb8bd2087f1f88d5397fc9b19))
+
 ## [1.0.3](https://github.com/xinatcg/picgo-plugin-gdrive/compare/1.0.2...1.0.3) (2023-10-22)
 
 
