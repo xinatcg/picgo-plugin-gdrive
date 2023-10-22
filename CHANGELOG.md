@@ -1,3 +1,40 @@
+## [1.0.5](https://github.com/xinatcg/picgo-plugin-gdrive/compare/1.0.4...1.0.5) (2023-10-22)
+
+
+### :memo: Docs
+
+* **test:** test release note docs ([31bcaf8](https://github.com/xinatcg/picgo-plugin-gdrive/commit/31bcaf8e2f8cda217ed41984ffeab2588bf61473))
+
+
+### :barber: Styles
+
+* **test:** test release note style ([1240776](https://github.com/xinatcg/picgo-plugin-gdrive/commit/12407765e92998312193825c6f10532cd7e674f6))
+
+
+### :zap: Refactors
+
+* **test:** test release note refactor ([0a81390](https://github.com/xinatcg/picgo-plugin-gdrive/commit/0a813907badfbc46bf7f10ba61e0e5cdb9f66587))
+
+
+### :fast_forward: Performance Improvements
+
+* **test:** test release note perf ([9d40883](https://github.com/xinatcg/picgo-plugin-gdrive/commit/9d40883ef48f863174403e25cc00c6b02e46c1a9))
+
+
+### :star: Performance Improvements
+
+* **ci:** improve the release note config ([b2790cb](https://github.com/xinatcg/picgo-plugin-gdrive/commit/b2790cbaef4894ce7a2397c552d49f4c9da24ec2))
+
+
+### :white_check_mark: Tests
+
+* **test:** test release note test ([d6ebbb6](https://github.com/xinatcg/picgo-plugin-gdrive/commit/d6ebbb6ecaf35d44941359e346f9336ae83f7fe9))
+
+
+### :repeat: CI
+
+* **test:** test release note ci ([1d0c001](https://github.com/xinatcg/picgo-plugin-gdrive/commit/1d0c00179623467a29d70c53ae1eb027f6b0bfe6))
+
 ## [1.0.4](https://github.com/xinatcg/picgo-plugin-gdrive/compare/1.0.3...1.0.4) (2023-10-22)
 
 
