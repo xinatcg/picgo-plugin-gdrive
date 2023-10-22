@@ -84,4 +84,4 @@
 
 1. 支持外链的生成: [参考](https://www.googledrives.cn/552.html)
 2. 支持 Service Account 授权方式
-3. 图片名自动化控制能力增长
+3. 图片名自动化控制能力增强

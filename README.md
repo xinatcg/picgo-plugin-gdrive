@@ -82,4 +82,4 @@ Why develop this plugin? It's mainly based on a need - internal image sharing an
 
 1. Support generating external links: [Reference](https://www.googledrives.cn/552.html).
 2. Support Service Account authorization method.
-3. Automation control over image names increases.
+3. Automation control over image names enhance.
