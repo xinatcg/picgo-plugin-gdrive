@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/xinatcg/picgo-plugin-gdrive/compare/1.1.0...1.1.1) (2023-11-10)
+
+
+### :bug: Bug Fixes
+
+* **ci:** fix the package.json version is not update after release as npm run after git operation ([2948aec](https://github.com/xinatcg/picgo-plugin-gdrive/commit/2948aecce821abb909fcab1e9e82a227e662cd16))
+
 ## [1.1.0](https://github.com/xinatcg/picgo-plugin-gdrive/compare/1.0.5...1.1.0) (2023-10-22)
 
 
