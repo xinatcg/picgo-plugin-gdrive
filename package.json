@@ -47,6 +47,7 @@
     "googleapis": "^105.0.0",
     "node-clipboardy": "^1.0.3",
     "open": "^7.0.3",
-    "server-destroy": "^1.0.1"
+    "server-destroy": "^1.0.1",
+    "string-width-cjs": "^5.1.1"
   }
 }
