@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/xinatcg/picgo-plugin-gdrive/compare/1.1.1...1.1.2) (2024-02-27)
+
+
+### :bug: Bug Fixes
+
+* **ci:** try to fix install plugin issue: ([fe98498](https://github.com/xinatcg/picgo-plugin-gdrive/commit/fe98498b3d0d11ec681b02e90355876808d64bd6))
+
 ## [1.1.1](https://github.com/xinatcg/picgo-plugin-gdrive/compare/1.1.0...1.1.1) (2023-11-10)
 
 
